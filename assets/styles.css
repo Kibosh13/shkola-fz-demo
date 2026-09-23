@@ -2265,7 +2265,7 @@ body {
   height: 100%;
   min-height: 360px;
   object-fit: cover;
-  object-position: 70% center;
+  object-position: center 18%;
 }
 
 .leader-profile h2 {
@@ -2451,5 +2451,474 @@ body.is-accessible .legal-card b {
   .leader-photo,
   .leader-photo img {
     min-height: 280px;
+  }
+}
+
+/* Team profiles, reviews, social links and privacy notice */
+.profile-list {
+  display: grid;
+  gap: 28px;
+}
+
+.profile-card {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.36fr) minmax(0, 0.64fr);
+  border: 1px solid rgba(35, 29, 20, 0.13);
+  border-radius: 24px;
+  background: var(--white);
+  box-shadow: 0 20px 70px rgba(24, 19, 12, 0.07);
+  overflow: hidden;
+}
+
+.profile-card--featured {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.profile-photo {
+  min-height: 610px;
+  margin: 0;
+  background: linear-gradient(145deg, rgba(224, 193, 127, 0.3), rgba(9, 9, 9, 0.08)), #e8e2d6;
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: 610px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.profile-photo--placeholder {
+  display: flex;
+  min-height: 470px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  color: rgba(9, 9, 9, 0.56);
+}
+
+.profile-photo--placeholder span {
+  font-family: var(--display);
+  font-size: clamp(5rem, 12vw, 9rem);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.profile-photo--placeholder small {
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.profile-copy {
+  padding: clamp(34px, 5vw, 66px);
+}
+
+.profile-copy .team-role {
+  display: block;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.profile-copy > h2 {
+  max-width: 790px;
+  margin: 18px 0 20px;
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 4.6vw, 4.7rem);
+  letter-spacing: -0.035em;
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+.profile-lead {
+  max-width: 800px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
+.profile-card--featured .profile-lead,
+.profile-card--featured .profile-columns li,
+.profile-card--featured .profile-copy > p {
+  color: #d0d0d0;
+}
+
+.profile-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 36px;
+  margin-top: 34px;
+}
+
+.profile-columns h3 {
+  margin: 0 0 12px;
+  color: var(--gold);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.profile-columns ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.profile-columns li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--muted);
+}
+
+.profile-columns li::before {
+  position: absolute;
+  top: 0.68em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  content: "";
+}
+
+.profile-columns li + li {
+  margin-top: 9px;
+}
+
+.profile-copy blockquote,
+.founder-copy blockquote {
+  margin: 34px 0 0;
+  padding: 20px 0 0;
+  border-top: 1px solid rgba(199, 146, 47, 0.48);
+  color: var(--gold-light);
+  font-family: var(--display);
+  font-size: clamp(1.45rem, 2.4vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.founder-portrait {
+  min-height: 520px;
+  overflow: hidden;
+}
+
+.founder-portrait img {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  object-fit: cover;
+  object-position: center 18%;
+}
+
+.founder-copy .text-link {
+  margin-top: 28px;
+  color: var(--gold-light);
+}
+
+.reviews-section {
+  border-top: 1px solid var(--line);
+}
+
+.reviews-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: -12px 0 26px;
+}
+
+.reviews-summary strong {
+  font-family: var(--display);
+  font-size: 3.4rem;
+  line-height: 1;
+}
+
+.reviews-summary span,
+.review-stars {
+  color: var(--gold);
+  letter-spacing: 0.12em;
+}
+
+.reviews-summary p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.review-card {
+  min-height: 260px;
+  padding: 30px;
+  border: 1px solid rgba(35, 29, 20, 0.13);
+  border-radius: 18px;
+  background: #faf8f3;
+}
+
+.review-card blockquote {
+  margin: 34px 0 24px;
+  font-family: var(--display);
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+.review-card p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.button-dark {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.social-news {
+  background: linear-gradient(120deg, #d5aa58, #b77e20);
+}
+
+.social-news-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(360px, 1.25fr);
+  gap: 48px;
+  align-items: end;
+}
+
+.social-news-inner h2 {
+  margin: 0 0 15px;
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.social-news-inner p:not(.eyebrow) {
+  max-width: 620px;
+  margin: 0;
+}
+
+.social-buttons {
+  display: grid;
+  gap: 10px;
+}
+
+.social-buttons a {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border: 1px solid rgba(9, 9, 9, 0.45);
+  color: var(--ink);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.social-buttons a:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.social-buttons--dark a {
+  border-color: rgba(255, 255, 255, 0.26);
+  color: var(--white);
+}
+
+.social-buttons--dark a:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.footer-social-strip {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.footer-social-strip > span {
+  color: var(--gold-light);
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.footer-social-strip div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+}
+
+.footer-social-strip a {
+  color: var(--white);
+  font-size: 0.86rem;
+  font-weight: 750;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 5px;
+}
+
+.privacy-banner {
+  position: fixed;
+  z-index: 90;
+  right: 24px;
+  bottom: 24px;
+  left: 24px;
+  display: grid;
+  max-width: 1180px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  padding: 24px 26px;
+  margin-inline: auto;
+  border: 1px solid rgba(225, 187, 104, 0.56);
+  background: #0d0d0d;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+  color: var(--white);
+}
+
+.privacy-banner strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--gold-light);
+  font-family: var(--display);
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+
+.privacy-banner p {
+  max-width: 790px;
+  margin: 0;
+  color: #cfcfcf;
+  font-size: 0.92rem;
+}
+
+.privacy-banner a {
+  color: var(--white);
+  text-underline-offset: 4px;
+}
+
+.privacy-banner-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.privacy-banner button {
+  min-height: 46px;
+  padding: 0 17px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: var(--white);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.privacy-banner button.privacy-accept {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--ink);
+}
+
+body.has-privacy-banner .accessibility-toggle {
+  bottom: 164px;
+}
+
+@media (max-width: 900px) {
+  .profile-card,
+  .profile-columns,
+  .social-news-inner,
+  .privacy-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-photo,
+  .profile-photo img {
+    min-height: 540px;
+    max-height: 680px;
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .review-card {
+    min-height: 0;
+  }
+
+  .privacy-banner-actions {
+    flex-wrap: wrap;
+  }
+
+  body.has-privacy-banner .accessibility-toggle {
+    bottom: 230px;
+  }
+}
+
+@media (max-width: 620px) {
+  .profile-photo,
+  .profile-photo img {
+    min-height: 440px;
+  }
+
+  .profile-copy {
+    padding: 28px 22px 34px;
+  }
+
+  .reviews-summary,
+  .footer-social-strip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .reviews-summary {
+    gap: 4px;
+  }
+
+  .social-news-inner {
+    gap: 30px;
+  }
+
+  .footer-social-strip {
+    padding-block: 24px;
+  }
+
+  .footer-social-strip div {
+    gap: 14px;
+  }
+
+  .privacy-banner {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .privacy-banner-actions button {
+    flex: 1 1 160px;
+  }
+
+  body.has-privacy-banner .accessibility-toggle {
+    display: none;
   }
 }

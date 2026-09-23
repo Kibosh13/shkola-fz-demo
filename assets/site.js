@@ -104,4 +104,43 @@
     legalLinks.innerHTML = '<a href="/shkola-fz-demo/privacy/">Персональные данные</a><a href="/shkola-fz-demo/cookie/">Cookie</a><a href="/shkola-fz-demo/agreement/">Согласие</a>';
     footerBottom.appendChild(legalLinks);
   }
+
+  const footer = document.querySelector('.site-footer');
+  if (footer && !footer.querySelector('.footer-social-strip')) {
+    const socialStrip = document.createElement('nav');
+    socialStrip.className = 'container footer-social-strip';
+    socialStrip.setAttribute('aria-label', 'Социальные сети школы');
+    socialStrip.innerHTML = '<span>Новости и предложения</span><div><a href="https://t.me/BC_ZARUBEZHKA" target="_blank" rel="noopener noreferrer">Telegram ↗</a><a href="https://max.ru/id381710479580_biz" target="_blank" rel="noopener noreferrer">MAX ↗</a><a href="https://vk.ru/zarubina_school" target="_blank" rel="noopener noreferrer">ВКонтакте ↗</a></div>';
+    footer.insertBefore(socialStrip, footerBottom);
+  }
+
+  let privacyChoice = null;
+  try {
+    privacyChoice = window.localStorage.getItem('school-privacy-choice');
+  } catch (error) {
+    privacyChoice = null;
+  }
+
+  if (!privacyChoice) {
+    const privacyBanner = document.createElement('section');
+    privacyBanner.className = 'privacy-banner';
+    privacyBanner.setAttribute('role', 'dialog');
+    privacyBanner.setAttribute('aria-labelledby', 'privacy-banner-title');
+    privacyBanner.setAttribute('aria-describedby', 'privacy-banner-text');
+    privacyBanner.innerHTML = '<div><strong id="privacy-banner-title">Конфиденциальность и cookie</strong><p id="privacy-banner-text">Сайт использует только необходимые технические данные для корректной работы и сохранения выбранных настроек. Ознакомьтесь с <a href="/shkola-fz-demo/privacy/">политикой конфиденциальности</a> и <a href="/shkola-fz-demo/cookie/">политикой cookie</a>.</p></div><div class="privacy-banner-actions"><button type="button" data-privacy-choice="necessary">Только необходимые</button><button type="button" class="privacy-accept" data-privacy-choice="accepted">Принять</button></div>';
+    document.body.classList.add('has-privacy-banner');
+    document.body.appendChild(privacyBanner);
+
+    privacyBanner.addEventListener('click', function (event) {
+      const button = event.target.closest('[data-privacy-choice]');
+      if (!button) return;
+      try {
+        window.localStorage.setItem('school-privacy-choice', button.dataset.privacyChoice);
+      } catch (error) {
+        // The banner can still be closed for the current visit.
+      }
+      privacyBanner.remove();
+      document.body.classList.remove('has-privacy-banner');
+    });
+  }
 })();
