@@ -105,6 +105,13 @@
     footerBottom.appendChild(legalLinks);
   }
 
+  const footerPrimaryLinks = document.querySelector('.footer-links');
+  if (footerPrimaryLinks && !footerPrimaryLinks.querySelector('a[href="/shkola-fz-demo/prices/"]')) {
+    const priceItem = document.createElement('li');
+    priceItem.innerHTML = '<a href="/shkola-fz-demo/prices/">Стоимость занятий</a>';
+    footerPrimaryLinks.appendChild(priceItem);
+  }
+
   const footer = document.querySelector('.site-footer');
   if (footer && !footer.querySelector('.footer-social-strip')) {
     const socialStrip = document.createElement('nav');
