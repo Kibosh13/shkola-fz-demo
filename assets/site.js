@@ -110,18 +110,25 @@
     const socialStrip = document.createElement('nav');
     socialStrip.className = 'container footer-social-strip';
     socialStrip.setAttribute('aria-label', 'Социальные сети школы');
-    socialStrip.innerHTML = '<span>Новости и предложения</span><div><a href="https://t.me/BC_ZARUBEZHKA" target="_blank" rel="noopener noreferrer">Telegram ↗</a><a href="https://max.ru/id381710479580_biz" target="_blank" rel="noopener noreferrer">MAX ↗</a><a href="https://vk.ru/zarubina_school" target="_blank" rel="noopener noreferrer">ВКонтакте ↗</a></div>';
+    socialStrip.innerHTML = '<span>Новости и предложения</span><div><a href="https://t.me/BC_ZARUBEZHKA" target="_blank" rel="noopener noreferrer">Telegram ↗</a><a class="footer-social-primary" href="https://max.ru/id381710479580_biz" target="_blank" rel="noopener noreferrer">MAX — написать ↗</a><a href="https://vk.ru/zarubina_school" target="_blank" rel="noopener noreferrer">ВКонтакте ↗</a><button class="footer-callback" type="button" data-open-callback>Перезвоним</button><button class="footer-cookie-settings" type="button" data-open-privacy>Настроить cookie</button></div>';
     footer.insertBefore(socialStrip, footerBottom);
   }
 
-  let privacyChoice = null;
-  try {
-    privacyChoice = window.localStorage.getItem('school-privacy-choice');
-  } catch (error) {
-    privacyChoice = null;
+  const privacyStorageKey = 'school-privacy-choice-v2';
+
+  function getPrivacyChoice() {
+    try {
+      return window.localStorage.getItem(privacyStorageKey);
+    } catch (error) {
+      return null;
+    }
   }
 
-  if (!privacyChoice) {
+  function showPrivacyBanner(force) {
+    if (!force && getPrivacyChoice()) return;
+    const existingBanner = document.querySelector('.privacy-banner');
+    if (existingBanner) existingBanner.remove();
+
     const privacyBanner = document.createElement('section');
     privacyBanner.className = 'privacy-banner';
     privacyBanner.setAttribute('role', 'dialog');
@@ -135,7 +142,7 @@
       const button = event.target.closest('[data-privacy-choice]');
       if (!button) return;
       try {
-        window.localStorage.setItem('school-privacy-choice', button.dataset.privacyChoice);
+        window.localStorage.setItem(privacyStorageKey, button.dataset.privacyChoice);
       } catch (error) {
         // The banner can still be closed for the current visit.
       }
@@ -143,4 +150,48 @@
       document.body.classList.remove('has-privacy-banner');
     });
   }
+
+  showPrivacyBanner(false);
+
+  document.addEventListener('click', function (event) {
+    const settingsButton = event.target.closest('[data-open-privacy]');
+    if (!settingsButton) return;
+    showPrivacyBanner(true);
+  });
+
+  const callbackDialog = document.createElement('dialog');
+  callbackDialog.className = 'callback-modal';
+  callbackDialog.setAttribute('aria-labelledby', 'callback-title');
+  callbackDialog.innerHTML = '<button class="callback-close" type="button" data-close-callback aria-label="Закрыть">×</button><div class="callback-intro"><span>Обратный звонок</span><h2 id="callback-title">Перезвоним</h2><p>Оставьте ФИО и номер телефона. В демоверсии данные передаются через письмо в вашей почтовой программе.</p></div><form class="callback-form"><label><span>ФИО</span><input name="fullName" type="text" autocomplete="name" required placeholder="Иванова Анна Сергеевна"></label><label><span>Номер телефона</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[+0-9()\\s-]{7,}" placeholder="+7 900 000-00-00"></label><label class="callback-consent"><input name="consent" type="checkbox" required><span>Согласен(на) с <a href="/shkola-fz-demo/privacy/" target="_blank">политикой конфиденциальности</a> и даю <a href="/shkola-fz-demo/agreement/" target="_blank">согласие на обработку персональных данных</a>.</span></label><button class="button" type="submit">Подготовить заявку</button><p class="callback-status" role="status" aria-live="polite"></p></form>';
+  document.body.appendChild(callbackDialog);
+
+  document.addEventListener('click', function (event) {
+    const openButton = event.target.closest('[data-open-callback]');
+    if (openButton) {
+      if (typeof callbackDialog.showModal === 'function') callbackDialog.showModal();
+      else callbackDialog.setAttribute('open', '');
+      const firstInput = callbackDialog.querySelector('input');
+      if (firstInput) firstInput.focus();
+      return;
+    }
+    if (event.target.closest('[data-close-callback]')) callbackDialog.close();
+  });
+
+  callbackDialog.addEventListener('click', function (event) {
+    if (event.target === callbackDialog) callbackDialog.close();
+  });
+
+  const callbackForm = callbackDialog.querySelector('.callback-form');
+  callbackForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (!callbackForm.reportValidity()) return;
+    const formData = new FormData(callbackForm);
+    const fullName = String(formData.get('fullName') || '').trim();
+    const phone = String(formData.get('phone') || '').trim();
+    const subject = encodeURIComponent('Заявка «Перезвоним» с сайта');
+    const body = encodeURIComponent('ФИО: ' + fullName + '\nТелефон: ' + phone + '\n\nСогласие на обработку персональных данных подтверждено в форме сайта.');
+    const status = callbackForm.querySelector('.callback-status');
+    status.textContent = 'Открываем почтовую программу. Для передачи заявки останется отправить письмо.';
+    window.location.href = 'mailto:bc-zarubezhka@yandex.ru?subject=' + subject + '&body=' + body;
+  });
 })();
