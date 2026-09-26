@@ -117,11 +117,11 @@
     const socialStrip = document.createElement('nav');
     socialStrip.className = 'container footer-social-strip';
     socialStrip.setAttribute('aria-label', 'Социальные сети школы');
-    socialStrip.innerHTML = '<span>Новости и предложения</span><div><a href="https://t.me/BC_ZARUBEZHKA" target="_blank" rel="noopener noreferrer">Telegram ↗</a><a class="footer-social-primary" href="https://max.ru/id381710479580_biz" target="_blank" rel="noopener noreferrer">MAX — написать ↗</a><a href="https://vk.ru/zarubina_school" target="_blank" rel="noopener noreferrer">ВКонтакте ↗</a><button class="footer-callback" type="button" data-open-callback>Перезвоним</button><button class="footer-cookie-settings" type="button" data-open-privacy>Настроить cookie</button></div>';
+    socialStrip.innerHTML = '<span>Новости и предложения</span><div><a href="https://t.me/BC_ZARUBEZHKA" target="_blank" rel="noopener noreferrer">Telegram-канал ↗</a><a class="footer-social-primary" href="https://max.ru/id381710479580_biz" target="_blank" rel="noopener noreferrer">MAX · новости ↗</a><a href="https://vk.ru/zarubina_school" target="_blank" rel="noopener noreferrer">ВКонтакте ↗</a><button class="footer-callback" type="button" data-open-callback>Перезвоним</button><button class="footer-cookie-settings" type="button" data-open-privacy>Настроить cookie</button></div>';
     footer.insertBefore(socialStrip, footerBottom);
   }
 
-  const privacyStorageKey = 'school-privacy-choice-v2';
+  const privacyStorageKey = 'school-privacy-choice-v3';
 
   function getPrivacyChoice() {
     try {
@@ -169,7 +169,7 @@
   const callbackDialog = document.createElement('dialog');
   callbackDialog.className = 'callback-modal';
   callbackDialog.setAttribute('aria-labelledby', 'callback-title');
-  callbackDialog.innerHTML = '<button class="callback-close" type="button" data-close-callback aria-label="Закрыть">×</button><div class="callback-intro"><span>Обратный звонок</span><h2 id="callback-title">Перезвоним</h2><p>Оставьте ФИО и номер телефона. В демоверсии данные передаются через письмо в вашей почтовой программе.</p></div><form class="callback-form"><label><span>ФИО</span><input name="fullName" type="text" autocomplete="name" required placeholder="Иванова Анна Сергеевна"></label><label><span>Номер телефона</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[+0-9()\\s-]{7,}" placeholder="+7 900 000-00-00"></label><label class="callback-consent"><input name="consent" type="checkbox" required><span>Согласен(на) с <a href="/shkola-fz-demo/privacy/" target="_blank">политикой конфиденциальности</a> и даю <a href="/shkola-fz-demo/agreement/" target="_blank">согласие на обработку персональных данных</a>.</span></label><button class="button" type="submit">Подготовить заявку</button><p class="callback-status" role="status" aria-live="polite"></p></form>';
+  callbackDialog.innerHTML = '<button class="callback-close" type="button" data-close-callback aria-label="Закрыть">×</button><div class="callback-intro"><span>Обратный звонок</span><h2 id="callback-title">Перезвоним</h2><p>Оставьте ФИО и номер телефона — администратор получит заявку и свяжется с вами.</p></div><form class="callback-form"><label><span>ФИО</span><input name="fullName" type="text" autocomplete="name" required placeholder="Иванова Анна Сергеевна"></label><label><span>Номер телефона</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[+0-9()\\s-]{7,}" placeholder="+7 900 000-00-00"></label><label class="callback-honeypot" aria-hidden="true"><span>Сайт</span><input name="website" type="text" tabindex="-1" autocomplete="off"></label><label class="callback-consent"><input name="consent" type="checkbox" required><span>Согласен(на) с <a href="/shkola-fz-demo/privacy/" target="_blank">политикой конфиденциальности</a> и даю <a href="/shkola-fz-demo/agreement/" target="_blank">согласие на обработку персональных данных</a>.</span></label><button class="button" type="submit">Отправить заявку</button><p class="callback-status" role="status" aria-live="polite"></p></form>';
   document.body.appendChild(callbackDialog);
 
   document.addEventListener('click', function (event) {
@@ -189,16 +189,48 @@
   });
 
   const callbackForm = callbackDialog.querySelector('.callback-form');
-  callbackForm.addEventListener('submit', function (event) {
+  callbackForm.addEventListener('submit', async function (event) {
     event.preventDefault();
     if (!callbackForm.reportValidity()) return;
     const formData = new FormData(callbackForm);
     const fullName = String(formData.get('fullName') || '').trim();
     const phone = String(formData.get('phone') || '').trim();
-    const subject = encodeURIComponent('Заявка «Перезвоним» с сайта');
-    const body = encodeURIComponent('ФИО: ' + fullName + '\nТелефон: ' + phone + '\n\nСогласие на обработку персональных данных подтверждено в форме сайта.');
+    const website = String(formData.get('website') || '').trim();
     const status = callbackForm.querySelector('.callback-status');
-    status.textContent = 'Открываем почтовую программу. Для передачи заявки останется отправить письмо.';
-    window.location.href = 'mailto:bc-zarubezhka@yandex.ru?subject=' + subject + '&body=' + body;
+    const submitButton = callbackForm.querySelector('button[type="submit"]');
+
+    status.className = 'callback-status';
+    status.textContent = 'Отправляем заявку…';
+    submitButton.disabled = true;
+    submitButton.textContent = 'Отправляем…';
+
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/bc-zarubezhka@yandex.ru', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          'ФИО': fullName,
+          'Телефон': phone,
+          'Страница': window.location.href,
+          '_subject': 'Новая заявка «Перезвоним» с сайта',
+          '_template': 'table',
+          '_captcha': 'false',
+          '_honey': website
+        })
+      });
+      const result = await response.json().catch(function () { return {}; });
+      if (!response.ok || result.success === false || String(result.success).toLowerCase() === 'false') {
+        throw new Error('Form submission failed');
+      }
+      callbackForm.reset();
+      status.classList.add('is-success');
+      status.textContent = 'Спасибо! Заявка отправлена. Администратор перезвонит вам по указанному номеру.';
+      submitButton.textContent = 'Заявка отправлена';
+    } catch (error) {
+      status.classList.add('is-error');
+      status.textContent = 'Не удалось отправить заявку. Позвоните нам по номеру 8 926 077-16-79.';
+      submitButton.disabled = false;
+      submitButton.textContent = 'Отправить заявку';
+    }
   });
 })();
